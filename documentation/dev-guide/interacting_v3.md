@@ -1,29 +1,32 @@
 # 和etcd交互
 
-Users mostly interact with etcd by putting or getting the value of a key. This section describes how to do that by using etcdctl, a command line tool for interacting with etcd server. The concepts described here should apply to the gRPC APIs or client library APIs.
+> 注： 内容翻译自 [Interacting with etcd](https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/interacting_v3.md)
 
-By default, etcdctl talks to the etcd server with the v2 API for backward compatibility. For etcdctl to speak to etcd using the v3 API, the API version must be set to version 3 via the `ETCDCTL_API` environment variable.
+用户常用通过放置或者获取key的值来和etcd交互。这一节描述如何使用etcdctl来操作， etcdctl是一个和etcd服务器交互的命令行工具。这里描述的概念也适用于gRPC API或者客户端类库API。
+
+默认，为了向后兼容etcdctl使用v2 API来和etcd server通讯。为了让etcdctl使用v3 API来和etcd通讯，API版本必须通过环境变量 `ETCDCTL_API` 设置为 版本3。
 
 ``` bash
 export ETCDCTL_API=3
 ```
 
-## Write a key
+## 写入key
 
-Applications store keys into the etcd cluster by writing to keys. Every stored key is replicated to all etcd cluster members through the Raft protocol to achieve consistency and reliability.
+应用通过写入key来储存key到etcd中。每个存储的key被通过Raft协议复制到所有etcd集群成员来达到一致性和可靠性。
 
-Here is the command to set the value of key `foo` to `bar`:
+这是设置key `foo` 的值为 `bar` 的命令:
+
 
 ``` bash
 $ etcdctl put foo bar
 OK
 ```
 
-## Read keys
+## 读取key
 
-Applications can read values of keys from an etcd cluster. Queries may read a single key, or a range of keys. 
+应用可以从etcd集群中读取key的值。查询可以读取单个key，或者某个范围的key。
 
-Suppose the etcd cluster has stored the following keys:
+假设etcd集群存储有下面的key：
 
 ```
 foo = bar
@@ -31,7 +34,7 @@ foo1 = bar1
 foo3 = bar3
 ```
 
-Here is the command to read the value of key `foo`:
+这是读取key `for` 的值的命令：
 
 ```bash
 $ etcdctl get foo
@@ -39,7 +42,7 @@ foo
 bar
 ```
 
-Here is the command to range over the keys from `foo` to `foo9`:
+这是覆盖从 `foo` to `foo9` 的key的命令：
 
 ```bash
 $ etcdctl get foo foo9
@@ -51,21 +54,24 @@ foo3
 bar3
 ```
 
-## Read past version of keys
+> 注： 测试中发现，这个命令的有效区间是这样：`[foo foo9)`， 即包含第一个参数，但是不包含第二个参数。因此如果第二个参数是 `foo3`，上面的命令是不会返回 key `foo3` 的值的。
 
-Applications may want to read superseded versions of a key. For example, an application may wish to roll back to an old configuration by accessing an earlier version of a key. Alternatively, an application may want a consistent view over multiple keys through multiple requests by accessing key history.
-Since every modification to the etcd cluster key-value store increments the global revision of an etcd cluster, an application can read superseded keys by providing an older etcd revision.
+## 读取key过去版本的值
 
-Suppose an etcd cluster already has the following keys:
+应用可能想读取key的被替代的值。例如，应用可能想通过访问key的先前版本来回滚到旧的配置。或者，应用可能想通过访问key历史记录的多个请求来得到一个覆盖多个key上的统一视图(TBD: 没看懂:))。
+
+因为etcd集群上键值存储的每个修改都会增加etcd集群的全局修订版本(revision)，应用可以通过提供旧有的etcd版本来读取被替代的key。
+
+假设etcd集群已经有下列key：
 
 ``` bash
 $ etcdctl put foo bar         # revision = 2
 $ etcdctl put foo1 bar1       # revision = 3
-$ etcdctl put foo bar_new     # revision = 4 
+$ etcdctl put foo bar_new     # revision = 4
 $ etcdctl put foo1 bar1_new   # revision = 5
 ```
 
-Here are an example to access the past versions of keys:
+这里是访问key的过去版本的例子：
 
 ```bash
 $ etcdctl get foo foo9 # access the most recent versions of keys
@@ -93,65 +99,69 @@ bar
 $ etcdctl get --rev=1 foo foo9 # access the versions of keys at revision 1
 ```
 
-## Delete keys
+> 注： 有个疑问，怎么知道当前etcd的revision是多少？新安装的etcd我是靠一个一个值推断出来的，但是这肯定不是个好办法。TBD....
 
-Applications can delete a key or a range of keys from an etcd cluster.
+## 删除key
 
-Here is the command to delete key `foo`:
+应用可以从etcd集群中删除一个key或者特定范围的key。
+
+下面是删除key `foo` 的命令：
 
 ```bash
 $ etcdctl del foo
-1 # one key is deleted
+1 # 删除了一个key
 ```
-
-Here is the command to delete keys ranging from `foo` to `foo9`:
+这是删除从 `foo` to `foo9` 范围的key的命令：
 
 ```bash
 $ etcdctl del foo foo9
-2 # two keys are deleted
+2 # 删除了两个key
 ```
 
-## Watch key changes
+> 注： 这里有个奇怪的事情，如果用命令 `etcdctl del foo foo10`,是可以删除key foo/foo1/foo2 的，但是无法删除 foo3，换成命令 `etcdctl del foo foo9` 又可以删除 foo3。这个规律....
 
-Applications can watch on a key or a range of keys to monitor for any updates.
+## 观察key的变化
 
-Here is the command to watch on key `foo`:
+应用可以观察一个key或者特定范围内的key来监控任何更新。
+
+这是在key `foo` 上进行观察的命令：
 
 ```bash
-$ etcdctl watch foo 
-# in another terminal: etcdctl put foo bar
+$ etcdctl watch foo
+# 在另外一个终端: etcdctl put foo bar
 foo
 bar
 ```
 
-Here is the command to watch on a range key from `foo` to `foo9`:
+这是观察从 `foo` to `foo9` 范围key的命令：
 
 ```bash
 $ etcdctl watch foo foo9
-# in another terminal: etcdctl put foo bar
+# 在另外一个终端: etcdctl put foo bar
 foo
 bar
-# in another terminal: etcdctl put foo1 bar1
+# 在另外一个终端: etcdctl put foo1 bar1
 foo1
 bar1
 ```
 
-## Watch historical changes of keys
+## 观察key的历史改动
 
-Applications may want to watch for historical changes of keys in etcd. For example, an application may wish to receive all the modifications of a key; if the application stays connected to etcd, then `watch` is good enough. However, if the application or etcd fails, a change may happen during the failure, and the application will not receive the update in real time. To guarantee the update is delivered, the application must be able to watch for historical changes to keys. To do this, an application can specify a historical revision on a watch, just like reading past version of keys.
+应用可能想观察etcd中key的历史改动。例如，应用想接收到某个key的所有修改。如果应用一直连接到etcd，那么 `watch` 就足够好了。但是，如果应用或者etcd出错，改动可能发生在出错期间，这样应用就没能实时接收到这个更新。为了保证更新被接收，应用必须能够观察到key的历史变动。为了做到这点，应用可以在观察时指定一个历史修订版本，就像读取key的过往版本一样。
 
-Suppose we finished the following sequence of operations:
+假设我们完成了下列操作序列：
 
 ``` bash
 etcdctl put foo bar         # revision = 2
 etcdctl put foo1 bar1       # revision = 3
-etcdctl put foo bar_new     # revision = 4 
+etcdctl put foo bar_new     # revision = 4
 etcdctl put foo1 bar1_new   # revision = 5
 ```
 
-Here is an example to watch the historical changes:
+这是观察历史改动的例子：
+
 ```bash
-# watch for changes on key `foo` since revision 2
+# 从修订版本 2 开始观察key `foo` 的改动
 $ etcdctl watch --rev=2 foo
 PUT
 foo
@@ -160,84 +170,86 @@ PUT
 foo
 bar_new
 
-# watch for changes on key `foo` since revision 3
+# 从修订版本 3 开始观察key `foo` 的改动
 $ etcdctl watch --rev=3 foo
 PUT
 foo
 bar_new
 ```
 
-## Compacted revisions
+## 压缩修订版本
 
-As we mentioned, etcd keeps revisions so that applications can read past versions of keys. However, to avoid accumulating an unbounded amount of history, it is important to compact past revisions. After compacting, etcd removes historical revisions, releasing resources for future use. All superseded data with revisions before the compacted revision will be unavailable.
+如我们提到的，etcd保存修订版本以便应用可以读取key的过往版本。但是，为了避免积累无限数量的历史数据，压缩过往的修订版本就变得很重要。压缩之后，etcd删除历史修订版本，释放资源来提供未来使用。所有修订版本在压缩修订版本之前的被替代的数据将不可访问。
 
-Here is the command to compact the revisions:
+这是压缩修订版本的命令：
 
 ```bash
 $ etcdctl compact 5
 compacted revision 5
 
-# any revisions before the compacted one are not accessible
+# 在压缩修订版本之前的任何修订版本都不可访问
 $ etcdctl get --rev=4 foo
 Error:  rpc error: code = 11 desc = etcdserver: mvcc: required revision has been compacted
 ```
 
-## Grant leases
+## 授予租约
 
-Applications can grant leases for keys from an etcd cluster. When a key is attached to a lease, its lifetime is bound to the lease's lifetime which in turn is governed by a time-to-live (TTL). Each lease has a minimum time-to-live (TTL) value specified by the application at grant time. The lease's actual TTL value is at least the minimum TTL and is chosen by the etcd cluster. Once a lease's TTL elapses, the lease expires and all attached keys are deleted.
+应用可以为etcd集群里面的key授予租约。当key被附加到租约时，它的生存时间被绑定到租约的生存时间，而租约的生存时间相应的被time-to-live (TTL)管理。租约的实际TTL值是不低于最小TTL，由etcd集群选择。一旦租约的TTL到期，租约就过期而且所有附带的key都将被删除。
 
-Here is the command to grant a lease:
+这是授予租约的命令：
 
-```
-# grant a lease with 10 second TTL
+```bash
+# 授予租约，TTL为10秒
 $ etcdctl lease grant 10
 lease 32695410dcc0ca06 granted with TTL(10s)
 
-# attach key foo to lease 32695410dcc0ca06
+# 附加key foo到租约32695410dcc0ca06
 $ etcdctl put --lease=32695410dcc0ca06 foo bar
 OK
 ```
 
-## Revoke leases
+## 撤销租约
 
-Applications revoke leases by lease ID. Revoking a lease deletes all of its attached keys.
+应用通过租约id可以撤销租约。撤销租约将删除所有它附带的key。
 
-Suppose we finished the following sequence of operations:
+假设我们完成了下列的操作：
 
-```
+```bash
 $ etcdctl lease grant 10
 lease 32695410dcc0ca06 granted with TTL(10s)
 $ etcdctl put --lease=32695410dcc0ca06 foo bar
 OK
 ```
 
-Here is the command to revoke the same lease:
+这是撤销同一个租约的命令：
 
-```
+```bash
 $ etcdctl lease revoke 32695410dcc0ca06
 lease 32695410dcc0ca06 revoked
 
 $ etcdctl get foo
-# empty response since foo is deleted due to lease revocation
+# 空应答，因为租约撤销导致foo被删除
 ```
 
-## Keep leases alive
+## 维持租约
 
-Applications can keep a lease alive by refreshing its TTL so it does not expire.
+应用可以通过刷新key的TTL来维持租约，以便租约不过期。
 
-Suppose we finished the following sequence of operations:
+假设我们完成了下列操作：
 
-```
+```bash
 $ etcdctl lease grant 10
 lease 32695410dcc0ca06 granted with TTL(10s)
 ```
 
-Here is the command to keep the same lease alive:
+这是维持同一个租约的命令：
 
-```
+```bash
 $ etcdctl lease keep-alive 32695410dcc0ca0
 lease 32695410dcc0ca0 keepalived with TTL(100)
 lease 32695410dcc0ca0 keepalived with TTL(100)
 lease 32695410dcc0ca0 keepalived with TTL(100)
 ...
 ```
+
+> 注： 上面的这个命令，不是单次续约，而是一直维持这个租约。
