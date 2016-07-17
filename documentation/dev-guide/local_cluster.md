@@ -2,7 +2,7 @@
 
 > 注： 内容翻译自 [Setting up local clusters](https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/local_cluster.md)
 
-对于测试和开发部署，最快最简单的方式是搭建本地集群。对于产品部署，参考 [集群](clustering.md) 章节。
+对于测试和开发部署，最快最简单的方式是搭建本地集群。对于产品部署，参考 [集群]() 章节。
 
 ## 本地单独集群
 

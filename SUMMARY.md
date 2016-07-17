@@ -7,7 +7,12 @@ bui# Summary
 * [官方文档(翻译)](documentation/index.md)
 	* [搭建本地集群](documentation/dev-guide/local_cluster.md)
 	* [和etcd交互](documentation/dev-guide/interacting_v3.md)
-	* [集群指南](documentation/dev-guide/clustering.md)
+	* [API 参考文档](documentation/dev-guide/api_reference_v3.md)
+	* [gRPC 网关](documentation/dev-guide/api_grpc_gateway.md)
+	* [内嵌的etcd](documentation/dev-guide/embed_etcd.md)
+	* [试验性的API和特性](documentation/dev-guide/experimental_apis.md)
+	* [理解数据模型](leaning/data_model.md)
+
 
 
 

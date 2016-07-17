@@ -15,3 +15,42 @@ etcd 是一个分布式键值对存储，设计用来可靠而快速的保存关
 
 - [搭建本地集群](dev-guide/local_cluster.md)
 - [和etcd交互](dev-guide/interacting_v3.md)
+- [API 参考文档](dev-guide/api_reference_v3.md)
+- [gRPC 网关](dev-guide/api_grpc_gateway.md)
+- [内嵌的etcd](dev-guide/embed_etcd.md)
+- [试验性的API和特性](dev-guide/experimental_apis.md)
+
+## 操作 etcd 集群
+
+需要为支持的开发人员创建可靠而可扩展的键值存储的管理员应该从[cluster on multiple machines]()开始.
+
+> 注： 操作篇晚一点再翻译
+
+- [Setting up clusters]()
+- [Run etcd clusters inside containers]()
+- [Configuration]()
+- [Security]()
+- Monitoring
+- [Maintenance]()
+- [Understand failures]()
+- [Disaster recovery]()
+- [Performance]()
+- [Versioning]()
+- [Supported platform]()
+
+## 学习
+
+要学习更多etcd背后的概念和内部细节，请阅读下面的内容:
+
+- Why etcd (TODO)
+- [理解数据模型](leaning/data_model.md)
+- [Understand APIs]()
+- [Glossary]()
+- Internals (TODO)
+
+## 升级和兼容性
+
+- [Migrate applications from using API v2 to API v3](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/v2-migration.md)
+- [Updating v2.3 to v3.0](https://github.com/coreos/etcd/blob/master/Documentation/upgrades/upgrade_3_0.md)
+
+> 注： 因为是直接从etcd3开始，所以这两节我不关心，就不翻译了 :)
