@@ -44,8 +44,9 @@ etcd 是一个分布式键值对存储，设计用来可靠而快速的保存关
 
 - Why etcd (TODO)
 - [理解数据模型](leaning/data_model.md)
-- [Understand APIs]()
-- [Glossary]()
+- [理解API](leaning/api.md)
+- [术语](leaning/glossary.md)
+- [API保证](leaning/api_guarantees.md)
 - Internals (TODO)
 
 ## 升级和兼容性
