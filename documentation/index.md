@@ -28,7 +28,7 @@ etcd 是一个分布式键值对存储，设计用来可靠而快速的保存关
 
 - [Setting up clusters]()
 - [Run etcd clusters inside containers]()
-- [Configuration]()
+- [配置](op-guide/configuration.md)
 - [Security]()
 - Monitoring
 - [Maintenance]()

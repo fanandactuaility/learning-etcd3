@@ -11,6 +11,7 @@ bui# Summary
 	* [gRPC 网关](documentation/dev-guide/api_grpc_gateway.md)
 	* [内嵌的etcd](documentation/dev-guide/embed_etcd.md)
 	* [试验性的API和特性](documentation/dev-guide/experimental_apis.md)
+	* [配置](documentation/op-guide/configuration.md)
 	* [理解数据模型](documentation/leaning/data_model.md)
 	* [理解API](documentation/leaning/api.md)
 	* [术语](documentation/leaning/glossary.md)
