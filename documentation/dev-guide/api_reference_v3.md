@@ -2,6 +2,16 @@
 
 > 注： 内容翻译自 [etcd API references](https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_reference_v3.md)
 
+## 备注
+
+这个文档实在太大，堆在一起阅读起来很痛苦。
+
+因此，我采用按照服务和方法拆分的方式，重新整理了一份 [API参考文档](../../api/index.md) 并翻译，推荐阅读那份,用力戳下面的链接：
+
+[API参考文档](../../api/index.md)
+
+## 内容
+
 这是生成的文档。请阅读 proto 文件获取更多内容。
 
 ##### service `Auth` (etcdserver/etcdserverpb/rpc.proto)

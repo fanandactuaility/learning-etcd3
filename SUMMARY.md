@@ -16,12 +16,13 @@ bui# Summary
 	* [理解API](documentation/leaning/api.md)
 	* [术语](documentation/leaning/glossary.md)
 	* [API保证](documentation/leaning/api_guarantees.md)
-* [API详解](api/index.md)
+* [API参考文档(翻译)](api/index.md)
 	* [KV service](api/kv/kv_service.md)
 		* [Range方法](api/kv/range.md)
 		* [Put方法](api/kv/put.md)
 		* [DeleteRange方法](api/kv/deleteRange.md)
 		* [Txn方法](api/kv/txn.md)
+		* [Compact方法](api/kv/compact.md)
 
 
 

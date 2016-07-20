@@ -15,6 +15,8 @@
 ## 工具
 
 - [etcdctl](https://github.com/coreos/etcd/tree/master/etcdctl): etcd的命令行工具
+- [Mirror Maker](https://github.com/coreos/etcd/blob/master/etcdctl/doc/mirror_maker.md): etcd 的多数据中心支持方案，待研究
+
 
 ## 介绍资料
 
