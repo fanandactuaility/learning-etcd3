@@ -23,6 +23,8 @@ bui# Summary
 		* [DeleteRange方法](api/kv/deleteRange.md)
 		* [Txn方法](api/kv/txn.md)
 		* [Compact方法](api/kv/compact.md)
-
-
-
+	* [Watch service](api/watch/watch_service.md)
+	* [Lease service](api/lease/lease_service.md)
+		* [LeaseGrant方法](api/lease/leaseGrant.md)
+		* [LeaseRevoke方法](api/lease/leaseRevoke.md)
+		* [LeaseKeepAlive方法](api/lease/leaseKeepAlive.md)

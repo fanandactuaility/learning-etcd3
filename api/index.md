@@ -19,4 +19,6 @@
 已经整理并翻译的内容：
 
 * [KV service](kv/kv_service.md)
+* [Watch service](watch/watch_service.md)
+* [Lease service](lease/lease_service.md)
 

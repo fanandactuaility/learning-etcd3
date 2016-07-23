@@ -81,5 +81,29 @@ message RangeResponse {
 }
 ```
 
+mvccpb.KeyValue 的消息体：
 
+```java
+message KeyValue {
+  // key是bytes格式的key。不容许key为空。
+  bytes key = 1;
+
+  // create_revision 是这个key最后创建的修订版本
+  int64 create_revision = 2;
+
+  // mod_revision 是这个key最后修改的修订版本
+  int64 mod_revision = 3;
+
+  // version 是key的版本。删除会重置版本为0,而任何key的修改会增加它的版本。
+  int64 version = 4;
+
+  // value是key持有的值，bytes格式。
+  bytes value = 5;
+
+  // lease是附加给key的租约id。
+  // 当附加的租约过期时，key将被删除。
+  // 如果lease为0,则没有租约附加到key。
+  int64 lease = 6;
+}
+```
 
