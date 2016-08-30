@@ -6,6 +6,8 @@
 
 ## 本地单独集群
 
+> 注： `单独集群` 指只有一台服务器的集群。
+
 部署etcd集群作为单独集群是直截了当的。仅用一个命令启动它：
 
 ```
@@ -32,7 +34,9 @@ bar
 
 ## 本地多成员集群
 
-提供Procfile 用于简化搭建本地多成员集群。通过少量命令来启动多成员集群：
+> 注： `多成员集群` 指有多台台服务器的集群。
+
+提供 Procfile 用于简化搭建本地多成员集群。通过少量命令来启动多成员集群：
 
 ```
 # install goreman program to control Profile-based applications.
@@ -41,14 +45,17 @@ $ goreman -f Procfile start
 ...
 ```
 
-> 注： 必须先安装 go，请见章节 [Go语言安装](../../installation/golang.md)
+> 注1： 必须先安装 go，请见章节 [Go语言安装](https://skyao.gitbooks.io/leaning-go/content/installation/)
+> 注2： 这里所说的 Procfile 文件是来自 [etcd 的 gitub 项目的根目录下的Procfile文件](https://github.com/coreos/etcd/blob/master/Procfile)，但是需要修改一下，将里面的 `bin/etcd` 修改为 `etcd`
 
 启动的成员各自在 `localhost:12379`, `localhost:22379`, 和 `localhost:32379` 上监听客户端请求。
 
+> 注： 英文原文中是 `localhost:12379` 用的是 12379 端口，但是实际上述 Procfile 文件中启动的是 2379 端口，如果连接时发现无法访问，请自行修改。下面的 12379 也是如此，请自行修改为 2379.
+
 通过使用 etcdctl 来和已经启动的集群交互：
 
-```
-# use API version 3
+```bash
+# 使用 API version 3
 $ export ETCDCTL_API=3
 
 $ etcdctl --write-out=table --endpoints=localhost:12379 member list
@@ -65,9 +72,13 @@ OK
 ```
 
 为了体验etcd的容错性，杀掉一个成员：
-```
-# kill etcd2
+
+```bash
+# 杀掉 etcd2
 $ goreman run stop etcd2
+# 注：实测这个命令无法停止etcd，最后还是用ps命令找出pid，然后kill
+# ps -ef | grep etcd | grep 127.0.0.1:22379
+# kill 20144
 
 $ etcdctl --endpoints=localhost:12379 put key hello
 OK
@@ -75,15 +86,16 @@ OK
 $ etcdctl --endpoints=localhost:12379 get key
 hello
 
-# try to get key from the killed member
+# 试图从被杀掉的成员获取key
 $ etcdctl --endpoints=localhost:22379 get key
 2016/04/18 23:07:35 grpc: Conn.resetTransport failed to create client transport: connection error: desc = "transport: dial tcp 127.0.0.1:22379: getsockopt: connection refused"; Reconnecting to "localhost:22379"
 Error:  grpc: timed out trying to connect
 
-# restart the killed member
+# 重启被杀掉的成员
+# 注：实测这个restart命令可用
 $ goreman run restart etcd2
 
-# get the key from restarted member
+# 从重启的成员获取key
 $ etcdctl --endpoints=localhost:22379 get key
 hello
 ```
