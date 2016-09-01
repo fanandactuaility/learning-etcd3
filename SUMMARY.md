@@ -20,6 +20,7 @@ bui# Summary
 		* [在容器内运行etcd集群](documentation/op-guide/container.md)
 		* [配置](documentation/op-guide/configuration.md)
 		* [加密](documentation/op-guide/security.md)
+		* [支持平台](documentation/op-guide/supported-platform.md)
 	* [学习](documentation/leaning/index.md)
         * [理解数据模型](documentation/leaning/data_model.md)
         * [理解API](documentation/leaning/api.md)

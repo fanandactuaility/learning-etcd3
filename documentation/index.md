@@ -24,19 +24,18 @@ etcd 是一个分布式键值对存储，设计用来可靠而快速的保存关
 
 需要为支持的开发人员创建可靠而可扩展的键值存储的管理员应该从[cluster on multiple machines]()开始.
 
-> 注： 操作篇晚一点再翻译
-
-- [Setting up clusters]()
-- [Run etcd clusters inside containers]()
+- [搭建etcd集群](op-guide/clustering.md)
+- [搭建etcd网关](op-guide/gateway.md)
+- [在容器内运行etcd集群](op-guide/container.md)
 - [配置](op-guide/configuration.md)
-- [Security]()
+- [加密](p-guide/security.md)
 - Monitoring
 - [Maintenance]()
 - [Understand failures]()
 - [Disaster recovery]()
 - [Performance]()
 - [Versioning]()
-- [Supported platform]()
+- [支持平台](op-guide/supported-platform.md)
 
 ## 学习
 
@@ -54,4 +53,4 @@ etcd 是一个分布式键值对存储，设计用来可靠而快速的保存关
 - [Migrate applications from using API v2 to API v3](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/v2-migration.md)
 - [Updating v2.3 to v3.0](https://github.com/coreos/etcd/blob/master/Documentation/upgrades/upgrade_3_0.md)
 
-> 注： 因为是直接从etcd3开始，所以这两节我不关心，就不翻译了 :)
+> 注： 因为是直接从etcd3开始，所以这两节关于升级的内容不关心，就不翻译了 :)
