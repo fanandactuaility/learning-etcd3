@@ -19,6 +19,7 @@ bui# Summary
 		* [搭建etcd网关](documentation/op-guide/gateway.md)
 		* [在容器内运行etcd集群](documentation/op-guide/container.md)
 		* [配置](documentation/op-guide/configuration.md)
+		* [维护](documentation/op-guide/maintenance.md)
 		* [加密](documentation/op-guide/security.md)
 		* [支持平台](documentation/op-guide/supported-platform.md)
 	* [学习](documentation/leaning/index.md)

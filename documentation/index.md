@@ -28,9 +28,9 @@ etcd 是一个分布式键值对存储，设计用来可靠而快速的保存关
 - [搭建etcd网关](op-guide/gateway.md)
 - [在容器内运行etcd集群](op-guide/container.md)
 - [配置](op-guide/configuration.md)
-- [加密](p-guide/security.md)
+- [加密](op-guide/security.md)
 - Monitoring
-- [Maintenance]()
+- [维护](op-guide/maintenance.md)
 - [Understand failures]()
 - [Disaster recovery]()
 - [Performance]()
