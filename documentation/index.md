@@ -32,8 +32,8 @@ etcd 是一个分布式键值对存储，设计用来可靠而快速的保存关
 - Monitoring
 - [维护](op-guide/maintenance.md)
 - [理解失败](op-guide/failures.md)
-- [Disaster recovery]()
-- [Performance]()
+- [灾难恢复](op-guide/recovery.md)
+- [性能](op-guide/performance.md)
 - [版本](op-guide/versioning.md)
 - [支持平台](op-guide/supported-platform.md)
 
