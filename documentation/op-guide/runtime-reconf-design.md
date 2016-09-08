@@ -2,51 +2,51 @@
 
 > 注：内容翻译自 [Design of runtime reconfiguration](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/runtime-reconf-design.md)
 
-Runtime reconfiguration is one of the hardest and most error prone features in a distributed system, especially in a consensus based system like etcd.
+在分布式系统中，运行时重配置是最困难和最有错误倾向的特性，尤其是基于一致性的系统如 etcd 中。
 
-Read on to learn about the design of etcd's runtime reconfiguration commands and how we tackled these problems.
+继续阅读来学习关于 etcd 的运行时重配置命令的设计和我们如何解决这些问题。
 
-## Two phase config changes keep the cluster safe
+## 两阶段配置修改保持集群安全
 
-In etcd, every runtime reconfiguration has to go through [two phases][add-member] for safety reasons. For example, to add a member, first inform cluster of new configuration and then start the new member.
+在etcd中，为了安全每个运行时重配置必须通过 [两阶段][add-member]. 例如，为了添加成员，首先通知集群新配置然后再启动新成员。
 
-Phase 1 - Inform cluster of new configuration
+阶段 1 - 通知集群新配置
 
-To add a member into etcd cluster, make an API call to request a new member to be added to the cluster. This is only way to add a new member into an existing cluster. The API call returns when the cluster agrees on the configuration change.
+为了添加成员到 etcd 集群，发起一个 API 调用来请求要添加一个新成员到集群。这是添加新成员到现有集群的唯一方法。当集群同意配置修改时 API 调用返回。
 
-Phase 2 - Start new member
+阶段 2 - 启动新成员
 
-To join the etcd member into the existing cluster, specify the correct `initial-cluster` and set `initial-cluster-state` to `existing`. When the member starts, it will contact the existing cluster first and verify the current cluster configuration matches the expected one specified in `initial-cluster`. When the new member successfully starts, the cluster has reached the expected configuration.
+为了将 etcd 成员加入已有的集群，指定正确的 `initial-cluster` 并设置 `initial-cluster-state` 为 `existing`. 当成员启动时, 它会首先联系已有的集群并验证当前集群配置匹配在 `initial-cluster` 中期待的配置。当新成员成功启动时，集群就达到了期待的配置。
 
-By splitting the process into two discrete phases users are forced to be explicit regarding cluster membership changes. This actually gives users more flexibility and makes things easier to reason about. For example, if there is an attempt to add a new member with the same ID as an existing member in an etcd cluster, the action will fail immediately during phase one without impacting the running cluster. Similar protection is provided to prevent adding new members by mistake. If a new etcd member attempts to join the cluster before the cluster has accepted the configuration change,, it will not be accepted by the cluster.
+通过将过程拆分为两个分离的阶段，用户被强制去明确关于集群成员的修改。这实际给了用户更多灵活性并让事情容易推导。例如，如果有尝试使用和集群中现有成员相同的ID添加新成员，这个行为将在阶段1期间立即失败而不影响运行中的集群。提供类似的保存来放置错误添加新成员。如果新 etcd 成员试图在集群接受配置修改前加入集群，它将无法被集群接受。
 
-Without the explicit workflow around cluster membership etcd would be vulnerable to unexpected cluster membership changes. For example, if etcd is running under an init system such as systemd, etcd would be restarted after being removed via the membership API, and attempt to rejoin the cluster on startup. This cycle would continue every time a member is removed via the API and systemd is set to restart etcd after failing, which is unexpected.
+没有围绕集群成员的明确工作流，etcd 将因意外的集群成员修改而容易受伤。例如，如果 etcd 运行在初始化系统例如 systemd，etcd 在通过成员API移除之后将被重启，并试图在启动时重新加入集群。这个循环在每次成员被通过API删除时继续，而 systemd 在失败之后被设置为重启 etcd，这是出乎意料的。
 
-We expect runtime reconfiguration to be an infrequent operation. We decided to keep it explicit and user-driven to ensure configuration safety and keep the cluster always running smoothly under explicit control.
+我们期待运行时重配置是极少进行的操作。我们决定让它保持明确和用户驱动以保证配置安全和保持集群总是在明确控制下平稳运行。
 
-## Permanent loss of quorum requires new cluster
+## 法定人数永久丢失需要新集群
 
-If a cluster permanently loses a majority of its members, a new cluster will need to be started from an old data directory to recover the previous state.
+如果集群永久丢失了它的成员的多数，需要从旧有的数据目录启动新的集群来恢复之前的状态。
 
-It is entirely possible to force removing the failed members from the existing cluster to recover. However, we decided not to support this method since it bypasses the normal consensus committing phase, which is unsafe. If the member to remove is not actually dead or force removed through different members in the same cluster, etcd will end up with a diverged cluster with same clusterID. This is very dangerous and hard to debug/fix afterwards. 
+从已有集群中强制删除失败成员来恢复是完全可能的。但是，我们决定不支持这个方法，因为它绕开了正常的一致性提交阶段，这是不安全的。如果要删除的成员并没有实际死亡或者是通过在同一个集群中的不同成员强制删除，etcd 将以分离的有同样ID的集群方式结束。这非常危险而之后难于调试/修改。
 
-With a correct deployment, the possibility of permanent majority lose is very low. But it is a severe enough problem that worth special care. We strongly suggest reading the [disaster recovery documentation][disaster-recovery] and prepare for permanent majority lose before putting etcd into production.
+正确部署时，永久多数丢失的可能性非常低。但是它是一个足够严重的问题，值得特别小心。强烈建议阅读 [灾难恢复文档][disaster-recovery] 并在产品中使用 etcd 前为永久多数丢失做好准备。
 
-## Do not use public discovery service for runtime reconfiguration
+## 不要为运行时重配置使用公开发现服务
 
-The public discovery service should only be used for bootstrapping a cluster. To join member into an existing cluster, use runtime reconfiguration API. 
+公开发现服务(discovery service)仅仅应该用于启动集群。要往已有集群中添加成员，使用运行时重配置API。
 
-Discovery service is designed for bootstrapping an etcd cluster in the cloud environment, when the IP addresses of all the members are not known beforehand. After successfully bootstrapping a cluster, the IP addresses of all the members are known. Technically, the discovery service should no longer be needed.
+发现服务设计用于在云环境下启动 etcd 集群，当所有成员的 IP 地址实现不知道时。在成功启动集群后， 所有成员的 IP 地址都已知。严格说，发现服务应该不再需要。
 
-It seems that using public discovery service is a convenient way to do runtime reconfiguration, after all discovery service already has all the cluster configuration information. However relying on public discovery service brings troubles: 
+看上去使用公开发现服务是做运行时重配置的捷径，毕竟发现服务已经有所有集群配置信息。但是，依赖公开发现服务将带来问题：
 
-1. it introduces external dependencies for the entire life-cycle of the cluster, not just bootstrap time. If there is a network issue between the cluster and public discovery service, the cluster will suffer from it.
- 
-2. public discovery service must reflect correct runtime configuration of the cluster during it life-cycle. It has to provide security mechanism to avoid bad actions, and it is hard. 
+1. 它为集群的完整生命周期引入额外依赖，而不仅仅是启动时间. 如果在集群和公开发现服务之间有网络问题，集群将为此受折磨。
 
-3. public discovery service has to keep tens of thousands of cluster configurations. Our public discovery service backend is not ready for that workload.
+2. 公开发现服务必须考虑在生命周期期间集群的正确运行时配置。它必须提供安全机制来避免恶劣行为，而这是很困难的。
 
-To have a discovery service that supports runtime reconfiguration, the best choice is to build a private one.
+3. 公开发现服务必须保持数以万计的集群配置。我们的公开发现服务没有为这种负载做好准备。
+
+要有支持运行时重配置的发现服务，最佳选择是搭建一个私有的。
 
 [add-member]: runtime-configuration.md#add-a-new-member
 [disaster-recovery]: recovery.md
