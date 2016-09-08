@@ -64,11 +64,11 @@ ETCDCTL_API=3 etcdctl --endpoints=http://172.16.28.21:2379,http://172.16.28.22:2
 
 ### DNS
 
-通过被本地解析器已知的 DNS 名称指向伙伴的产品集群必须挂载 [host's DNS 配置](https://coreos.com/kubernetes/docs/latest/kubelet-wrapper.html#customizing-rkt-options).
+通过被本地解析器已知的 DNS 名称指向伙伴的产品集群必须挂载 [主机的 DNS 配置](https://coreos.com/kubernetes/docs/latest/kubelet-wrapper.html#customizing-rkt-options).
 
 ## Docker
 
-为了暴露 etcd API 到docker host 之外的客户端， 使用容器的 host IP 地址。请见[`docker inspect`](https://docs.docker.com/engine/reference/commandline/inspect) 来获取关于如何得到IP地址的更多细节. 或者, 为 `docker run` 命令指定 `--net=host` 标记来跳过放置容器在分隔的网络栈中。
+为了暴露 etcd API 到 docker host 之外的客户端， 使用容器的 host IP 地址。请见[`docker inspect`](https://docs.docker.com/engine/reference/commandline/inspect) 来获取关于如何得到IP地址的更多细节. 或者, 为 `docker run` 命令指定 `--net=host` 标记来跳过放置容器在分隔的网络栈中。
 
 ```bash
 # For each machine

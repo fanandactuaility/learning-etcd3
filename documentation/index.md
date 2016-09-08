@@ -1,7 +1,9 @@
 官方文档
 ======
 
-> 注： 内容翻译自 https://github.com/coreos/etcd/blob/master/Documentation/docs.md
+> 注1：由于 etcd3 极度缺乏中文资料，因为决定将官方的文档翻译出来，以便方便大家。这封文档可以任何翻阅和转发，只要保留出处就好。
+>
+> 注2：以下内容翻译自 https://github.com/coreos/etcd/blob/master/Documentation/docs.md
 
 etcd 是一个分布式键值对存储，设计用来可靠而快速的保存关键数据并提供访问。通过分布式锁，leader选举和写屏障(write barriers)来开启可靠的分布式协同。etcd集群是为高可用，持久性数据存储和检索而准备。
 
@@ -22,7 +24,7 @@ etcd 是一个分布式键值对存储，设计用来可靠而快速的保存关
 
 ## 操作 etcd 集群
 
-需要为支持的开发人员创建可靠而可扩展的键值存储的管理员应该从[cluster on multiple machines]()开始.
+管理员，需要为支持的开发人员创建可靠而可扩展的键值存储，应该从 [多机集群](op-guide/clustering.md) 开始.
 
 - [搭建etcd集群](op-guide/clustering.md)
 - [搭建etcd网关](op-guide/gateway.md)
@@ -39,7 +41,7 @@ etcd 是一个分布式键值对存储，设计用来可靠而快速的保存关
 
 ## 学习
 
-要学习更多etcd背后的概念和内部细节，请阅读下面的内容:
+要学习更多 etcd 背后的概念和内部细节，请阅读下面的内容:
 
 - Why etcd (TODO)
 - [理解数据模型](leaning/data_model.md)

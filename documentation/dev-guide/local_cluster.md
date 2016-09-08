@@ -20,7 +20,7 @@ $ ./etcd
 通过使用 etcdctl 来和已经启动的集群交互：
 
 ```
-# use API version 3
+# 使用 API 版本 3
 $ export ETCDCTL_API=3
 
 $ ./etcdctl put foo bar
@@ -29,8 +29,6 @@ OK
 $ ./etcdctl get foo
 bar
 ```
-
-> 注：如果遇到连接不上的问题，参考 [安装](../../installation/index.md) 一节中的说明。
 
 ## 本地多成员集群
 
@@ -55,7 +53,7 @@ $ goreman -f Procfile start
 通过使用 etcdctl 来和已经启动的集群交互：
 
 ```bash
-# 使用 API version 3
+# 使用 API 版本 3
 $ export ETCDCTL_API=3
 
 $ etcdctl --write-out=table --endpoints=localhost:12379 member list
@@ -78,7 +76,7 @@ OK
 $ goreman run stop etcd2
 # 注：实测这个命令无法停止etcd，最后还是用ps命令找出pid，然后kill
 # ps -ef | grep etcd | grep 127.0.0.1:22379
-# kill 20144
+# kill ****
 
 $ etcdctl --endpoints=localhost:12379 put key hello
 OK

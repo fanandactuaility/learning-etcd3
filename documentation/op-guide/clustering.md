@@ -1,10 +1,12 @@
 # 集群指南
 
+> 注：内容翻译自 [Clustering Guide](https://github.com/coreos/etcd/blob/master/Documentation/op-guide/clustering.md)
+
 ## 概述
 
-启动 etcd 集群静态的要求每个成员知道集群中的其他成员。在一些场景中，集群成员的IP地址可能无法提前知道。在这种情况下，etcd集群可以在发现服务的帮助下启动。
+启动 etcd 集群要求每个成员知道集群中的其他成员。在一些场景中，集群成员的 IP 地址可能无法提前知道。在这种情况下，etcd 集群可以在发现服务的帮助下启动。
 
-一旦 etcd 集群启动并运行，通过 [运行时重配置](runtime-configuration.md) 来添加或者移除成员。为了更好的理解运行时重配置后面的设计，建议阅读 [运行时重配置的设计](runtime-reconf-design.md)。
+一旦 etcd 集群启动并运行，通过 [运行时重配置](runtime-configuration.md) 来添加或者移除成员。为了更好的理解运行时重配置背后的设计，建议阅读 [运行时重配置的设计](runtime-reconf-design.md)。
 
 这份指南将覆盖下列用于启动 etcd 集群的机制：
 
@@ -12,9 +14,9 @@
 * [etcd Discovery / etcd 发现](#etcd-discovery)
 * [DNS Discovery / DNS 发现](#dns-discovery)
 
-启动机制的每一种都将用于启动三台机器的etcd集群，详情如下：
+启动机制的每一种都将用于启动三台机器的 etcd 集群，详情如下：
 
-|Name|Address|Hostname|
+|名字|地址|主机|
 |------|---------|------------------|
 |infra0|10.0.1.10|infra0.example.com|
 |infra1|10.0.1.11|infra1.example.com|
@@ -36,11 +38,11 @@ ETCD_INITIAL_CLUSTER_STATE=new
 
 注意： 在 `initial-cluster` 中指定的 URL 是 _advertised peer URLs_ ，例如，他们将匹配对应节点的 `initial-advertise-peer-urls` 的值。
 
-如果使用同样的配置启动多个集群(或者创建并部署单个集群)用于测试目的，强烈推荐每个集群给予一个唯一的 `initial-cluster-token`。这样做之后，etcd可以为集群生成唯一的集群ID和成员ID，甚至他们有完全一样的配置。这可以将etcd从可能让集群孵化的跨集群交互中保护起来。
+如果使用同样的配置启动多个集群(或者创建并部署单个集群)用于测试目的，强烈推荐每个集群给予一个唯一的 `initial-cluster-token`。这样做之后，etcd 可以为集群生成唯一的集群 ID 和成员 ID，甚至他们有完全一样的配置。这可以将 etcd 从可能让集群孵化的跨集群交互中保护起来。
 
-etcd 在 [`listen-client-urls`](configuration.md#--advertise-client-urls) 上接收客户端访问。etcd成员将 [`advertise-client-urls`](configuration.md#--listen-client-urls) 指定的URl上通告给其他成员，代理和客户端。常见的错误是设置 `advertise-client-urls` 为 localhost 或者留空为默认值，如果远程客户端可以达到etcd。
+etcd 在 [`listen-client-urls`](configuration.md#--advertise-client-urls) 上接收客户端访问。etcd 成员将 [`advertise-client-urls`](configuration.md#--listen-client-urls) 指定的 URl 上通告给其他成员，代理和客户端。常见的错误是设置 `advertise-client-urls` 为 localhost 或者留空为默认值，如果远程客户端可以达到 etcd。
 
-在每台机器上，使用这些标记启动etcd：
+在每台机器上，使用这些标记启动 etcd：
 
 ```bash
 $ etcd --name infra0 --initial-advertise-peer-urls http://10.0.1.10:2380 \
@@ -70,11 +72,11 @@ $ etcd --name infra2 --initial-advertise-peer-urls http://10.0.1.12:2380 \
   --initial-cluster-state new
 ```
 
-以 `--initial-cluster` 开头的命令行参数将在etcd随后的运行中被忽略。可以在shuhihua启动进程之后随意的删除环境变量或者命令行标记。如果配置需要稍后修改(例如，添加成员到集群或者从集群中移除成员)，查看 [运行时配置](runtime-configuration.md) 指南。
+以 `--initial-cluster` 开头的命令行参数将在 etcd 随后的运行中被忽略。可以在初始化启动进程之后随意的删除环境变量或者命令行标记。如果配置需要稍后修改(例如，添加成员到集群或者从集群中移除成员)，查看 [运行时配置](runtime-configuration.md) 指南。
 
 ### TLS
 
-etcd 支持通过 TLS 协议的加密通讯。TLS 通道可以用于加密伙伴间的内部集群通讯，也可以用于加密客户端请求。这个章节提供例子来搭建使用伙伴和客户端TLS的集群。详细描述 etcd 的 TLS 支持的额外信息可以在 [加密指南](security.md)
+etcd 支持通过 TLS 协议的加密通讯。TLS 通道可以用于加密伙伴间的内部集群通讯，也可以用于加密客户端请求。这个章节提供例子来搭建使用伙伴和客户端 TLS 的集群。详细描述 etcd 的 TLS 支持的额外信息可以在 [加密指南](security.md)
 
 #### 自签名证书
 
@@ -124,7 +126,7 @@ $ etcd --name infra2 --initial-advertise-peer-urls https://10.0.1.12:2380 \
 
 #### 自动证书
 
-如果集群需要加密通讯，但是不需要认证连接，etcd可以配置为自动生成key。在初始化时，每个集群基于它的通告IP(advertised IP)地址和主机名创建它自己的key集合。
+如果集群需要加密通讯，但是不需要认证连接，etcd 可以配置为自动生成 key。在初始化时，每个集群基于它的通告IP(advertised IP) 地址和主机名创建它自己的 key 集合。
 
 在每台机器上，etcd 使用这些标记启动：
 
@@ -179,8 +181,6 @@ etcd: infra1 not listed in the initial cluster config
 exit 1
 ```
 
-> 注： 这个例子的错误在于 `--name infra1` 没有在 `--initial-cluster` 参数中指定。
-
 #### 案例2
 
 在这个例子中，我们试图映射节点(infra0)在不同地址(127.0.0.1:2380)而不是它在集群列表(10.0.1.10:2380)中列举的地址。如果这个节点是监听多个地址，所有地址 _必须_ 在 "initial-cluster" 配置指令中反映出来。
@@ -198,7 +198,7 @@ exit 1
 
 #### 案例3
 
-如果伙伴被用配置参数的不同集合配置并试图加入这个集群，etcd 将报告集群ID不匹配并退出。
+如果伙伴被用配置参数的不同集合配置并试图加入这个集群，etcd 将报告集群 ID 不匹配并退出。
 
 ```bash
 $ etcd --name infra3 --initial-advertise-peer-urls http://10.0.1.13:2380 \
@@ -213,7 +213,7 @@ exit 1
 
 ## 发现
 
-在一些案例中，集群伙伴的IP可能无法提前知道。当使用云提供商或者网络使用 DHCP 时比较常见。在这些情况下，相比指定静态配置，使用使用已经存在的 etcd 集群来启动一个新的。我们称这个过程为"发现"。
+在一些案例中，集群伙伴的 IP 可能无法提前知道。当使用云提供商或者网络使用 DHCP 时比较常见。在这些情况下，相比指定静态配置，使用使用已经存在的 etcd 集群来启动一个新的。我们称这个过程为"发现"。
 
 有两个方法可以用来做发现：
 
@@ -224,24 +224,24 @@ exit 1
 
 为了更好的理解发现服务协议的设计，建议阅读发现服务项目 [文档](https://github.com/coreos/etcd/blob/master/Documentation/dev-internal/discovery_protocol.md)。
 
-#### 发现URL的存活时间
+#### 发现 URL 的存活时间
 
-发现URL标识唯一的etcd集群。对于新的集群，总是创建发现URL而不是重用发现URL。
+发现 URL 标识唯一的 etcd 集群。对于新的集群，总是创建发现 URL 而不是重用发现 URL。
 
 此外，发现URL应该仅仅用于集群的初始化启动。在集群已经运行之后修改集群成员，阅读 [运行时重配置](runtime-configuration.md) 指南。
 
-#### 定制etcd发现服务
+#### 定制 etcd 发现服务
 
-发现使用已有集群来启动自身。如果使用私有的etcd集群，可以创建像这样的URL：
+发现使用已有集群来启动自身。如果使用私有的 etcd 集群，可以创建像这样的 URL：
 
 
 ```bash
 $ curl -X PUT https://myetcd.local/v2/keys/discovery/6c007a14875d53d9bf0ef5a6fc0257c817f0fb83/_config/size -d value=3
 ```
 
-通过设置URL的size，创建了带有期待集群大小为3的发现URL。
+通过设置 URL 的 size，创建了带有期待集群大小为3的发现 URL。
 
-用于这个场景的URL将是  `https://myetcd.local/v2/keys/discovery/6c007a14875d53d9bf0ef5a6fc0257c817f0fb83` 而 etcd 成员将使用 `https://myetcd.local/v2/keys/discovery/6c007a14875d53d9bf0ef5a6fc0257c817f0fb83` 目录来注册，当他们启动时。
+用于这个场景的 URL 将是  `https://myetcd.local/v2/keys/discovery/6c007a14875d53d9bf0ef5a6fc0257c817f0fb83` 而 etcd 成员将使用 `https://myetcd.local/v2/keys/discovery/6c007a14875d53d9bf0ef5a6fc0257c817f0fb83` 目录来注册，当他们启动时。
 
 ** 每个成员必须有指定不同的名字标记。 `Hostname` 或者 `machine-id` 是个好选择。. 否则发现会因为重复名字而失败**
 
@@ -269,7 +269,7 @@ $ etcd --name infra2 --initial-advertise-peer-urls http://10.0.1.12:2380 \
   --discovery https://myetcd.local/v2/keys/discovery/6c007a14875d53d9bf0ef5a6fc0257c817f0fb83
 ```
 
-这将导致每个成员使用定制的etcd发现服务注册自身并开始集群，一旦所有的机器都已经注册。
+这将导致每个成员使用定制的 etcd 发现服务注册自身并开始集群，一旦所有的机器都已经注册。
 
 #### 公共 etcd 发现服务
 
@@ -336,7 +336,7 @@ exit 1
 
 ##### 警告
 
-这是一个无害的讲稿，表明发现URL将在这台机器上被忽略。
+这是一个无害的警告，表明发现 URL 将在这台机器上被忽略。
 
 ```bash
 $ etcd --name infra0 --initial-advertise-peer-urls http://10.0.1.10:2380 \
@@ -432,7 +432,7 @@ $ etcd --name infra2 \
 --listen-peer-urls http://infra2.example.com:2380
 ```
 
-集群也可以使用IP地址而不是域名来启动：
+集群也可以使用 IP 地址而不是域名来启动：
 
 ```bash
 $ etcd --name infra0 \
