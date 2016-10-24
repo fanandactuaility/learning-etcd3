@@ -1,4 +1,4 @@
-bui# Summary
+# Summary
 
 * [介绍](introduction/index.md)
     * [资料收集整理](introduction/information.md)
@@ -44,3 +44,4 @@ bui# Summary
 		* [LeaseGrant方法](api/lease/leaseGrant.md)
 		* [LeaseRevoke方法](api/lease/leaseRevoke.md)
 		* [LeaseKeepAlive方法](api/lease/leaseKeepAlive.md)
+* [全文标签总览](tags.md)
