@@ -6,5 +6,5 @@ Etcd3 是 CoreOS 于 2016年7月发布的 etcd 最新版本。
 
 笔记发布于 gitbook，请点击下面的链接阅读:
 
-https://skyao.gitbooks.io/leaning-etcd3/
+https://skyao.gitbooks.io/learning-etcd3/
 
