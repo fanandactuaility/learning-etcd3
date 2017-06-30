@@ -1,5 +1,4 @@
-资料收集整理
-==========
+# 资料收集整理
 
 ## 网站
 
@@ -29,6 +28,10 @@
 ### etcd2
 
 - [DockOne技术分享（三十一）：细节 ｜谈谈CoreOS的etcd](http://dockone.io/article/801)
+
+### Raft
+
+- [Raft一致性算法论文的中文翻译](https://github.com/maemual/raft-zh_cn)
 
 
 
