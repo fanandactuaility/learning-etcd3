@@ -6,11 +6,11 @@ KV service提供对键值对操作的支持。
 
 ```java
 service KV {
-  // 从键值存储中获取范围内的key.
+  // 从键值存储中获取范围内的 key.
   rpc Range(RangeRequest) returns (RangeResponse) {}
 
-  // 放置给定key到键值存储.
-  // put请求增加键值存储的修订版本并在事件历史中生成一个事件.
+  // 设置给定 key 到键值存储.
+  // put 请求增加键值存储的修订版本并在事件历史中生成一个事件.
   rpc Put(PutRequest) returns (PutResponse) {}
 
   // 从键值存储中删除给定范围。
