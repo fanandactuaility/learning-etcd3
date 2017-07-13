@@ -23,6 +23,6 @@
 
     ![](images/documentation_folder.png)
 
-	Documentent 目录 下的 dev-guide 目录就是上述内容，op-guide 和 leaning 目录下是后面要介绍的内容：
+	Documentent 目录 下的 dev-guide 目录就是上述内容，op-guide 和 learning 目录下是后面要介绍的内容：
 
     ![](images/dev_guide_folder.png)

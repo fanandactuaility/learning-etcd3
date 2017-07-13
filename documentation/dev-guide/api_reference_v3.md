@@ -1,7 +1,5 @@
 ### etcd API 参考
 
-> 注： 内容来自 [etcd API references](https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_reference_v3.md)
-
 ## 特别说明
 
 这个参考文档内容实在太多，英文原文的文档是一个巨型 markdown 文件，所有内容堆在一起，长的离谱......

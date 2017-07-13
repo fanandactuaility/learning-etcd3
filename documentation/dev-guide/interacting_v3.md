@@ -1,7 +1,5 @@
 # 和 etcd 交互
 
-> 注： 内容翻译自 [Interacting with etcd](https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/interacting_v3.md)
-
 用户通常通过设置或者获取 key 的值来和 etcd 交互。这一节描述如何使用 etcdctl 来操作， etcdctl 是一个和 etcd 服务器交互的命令行工具。这里描述的概念也适用于 gRPC API 或者客户端类库 API。
 
 默认，为了向后兼容 etcdctl 使用 v2 API 来和 etcd 服务器通讯。为了让 etcdctl 使用 v3 API 来和etcd通讯，API 版本必须通过环境变量 `ETCDCTL_API` 设置为版本3。

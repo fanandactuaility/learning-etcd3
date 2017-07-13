@@ -1,7 +1,5 @@
 # gRPC网关
 
-> 注： 内容翻译自 [gRPC gateway](https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_grpc_gateway.md)
-
 ## 为什么用 grpc-gateway
 
 etcd v3 使用 [gRPC](http://www.grpc.io/) 作为它的消息协议。etcd 项目包括基于 gRPC 的 [Go client](https://github.com/coreos/etcd/tree/master/clientv3) 和 命令行工具 etcdctl，通过 gRPC 和 etcd 集群通讯。对于不支持 gRPC 支持的语言，etcd 提供 JSON 的 [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway)。这个网关提供 RESTful 代理，翻译 HTTP/JSON 请求为 gRPC 消息。
