@@ -1,8 +1,9 @@
 # Tuning
 
-The default settings in etcd should work well for installations on a local network where the average network latency is low. However, when using etcd across multiple data centers or over networks with high latency, the heartbeat interval and election timeout settings may need tuning.
+默认的配置要求etcd安装本地网络，并且网络延迟低。不过如果部署在分夸多数据中心，或者网络延迟高的地方，那么心跳凭此或者选择时间就需要重新调整。
 
-The network isn't the only source of latency. Each request and response may be impacted by slow disks on both the leader and follower. Each of these timeouts represents the total time from request to successful response from the other machine.
+延迟不完全取决于网络，还可能因为leader和follower直接的蛮磁盘导致。这些超时中的每一个代表从另一台机器的请求到成功响应的总时间。
+
 
 ## Time parameters
 
